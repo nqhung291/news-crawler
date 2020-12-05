@@ -52,7 +52,7 @@ class VnExpress(scrapy.Spider):
         limit: Giới hạn số trang để crawl, có thể bỏ trống.
     '''
     name = "vnexpress"
-    folder_path = "vnexpress"
+    folder_path = "data"
     page_limit = None
     start_urls = []
     crawled_data = []
@@ -88,8 +88,9 @@ class VnExpress(scrapy.Spider):
         for article in list_articles:
             title = article.css('.title-news a::text').get()
             content = article.css('.description a::text').get()
+            url = article.css('.title-news a::attr(href)').extract_first()
             if title is not None and content is not None:
-                fields = [CATEGORIES[category], title.strip(), content.strip()]
+                fields = [CATEGORIES[category], title.strip(), content.strip(), url]
                 with open(self.folder_path + "/" + self.filename, 'a', encoding='utf-8') as fp:
                     writer = csv.writer(fp)
                     writer.writerow(fields)
